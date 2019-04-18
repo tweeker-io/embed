@@ -1,3 +1,5 @@
+import finder from '@medv/finder';
+
 const hover = (event) => {
   event.target.style.backgroundColor = 'green';
 }
@@ -8,6 +10,8 @@ const unhover = (event) => {
 
 const editElement = (event) => {
   event.preventDefault()
+  const selector = finder(event.target)
+  console.log(selector)
   console.log(event.target.innerText)
 }
 

@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.18.11"
+  },
+  "dependencies": {
+    "@medv/finder": "^1.1.1"
   }
 }
