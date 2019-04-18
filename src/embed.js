@@ -1,12 +1,16 @@
-document.addEventListener('mouseover', function(event) {
+const hover = (event) => {
   event.target.style.backgroundColor = 'green';
-}, false);
+}
 
-document.addEventListener('click', function(event) {
+const unhover = (event) => {
+  event.target.style.backgroundColor = '';
+}
+
+const editElement = (event) => {
   event.preventDefault()
   console.log(event.target.innerText)
-}, false);
+}
 
-document.addEventListener('mouseout', function(event) {
-  event.target.style.backgroundColor = '';
-}, false);
+document.addEventListener('mouseover', hover)
+document.addEventListener('mouseout', unhover)
+document.addEventListener('click', editElement)
