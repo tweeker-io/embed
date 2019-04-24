@@ -1,4 +1,5 @@
 import finder from '@medv/finder';
+import { PARENT_DOMAIN } from 'babel-dotenv';
 
 const hover = (event) => {
   event.target.style.backgroundColor = 'green';
@@ -14,7 +15,7 @@ const editElement = (event) => {
   window.parent.postMessage({
     selector: finder(event.target),
     text: event.target.innerText
-  }, 'http://localhost:3000')
+  }, PARENT_DOMAIN)
 }
 
 document.addEventListener('mouseover', hover)
