@@ -10,9 +10,11 @@ const unhover = (event) => {
 
 const editElement = (event) => {
   event.preventDefault()
-  const selector = finder(event.target)
-  console.log(selector)
-  console.log(event.target.innerText)
+
+  window.parent.postMessage({
+    selector: finder(event.target),
+    text: event.target.innerText
+  }, 'http://localhost:3000')
 }
 
 document.addEventListener('mouseover', hover)
