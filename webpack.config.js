@@ -13,7 +13,7 @@ module.exports = {
     ]
   },
   output: {
-    filename: 'embed.js'
+    filename: '0.0.1.js'
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
