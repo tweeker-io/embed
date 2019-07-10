@@ -45,20 +45,29 @@ const bindGoals = (goals) => {
     const element = document.querySelector(goal.selector)
     const eventType = (goal.category === 'form') ? 'submit' : 'click'
     element.addEventListener(eventType, handleGoal)
+    element.setAttribute('data-goalId', goal.id)
   })
 }
 
-const handleGoal = () => {
-  const url = API_ROOT + '/v1/success';
+const handleGoal = (event) => {
+  const url = API_ROOT + '/v1/successes';
+  const target = event.target;
 
   return fetch(url, {
     method: 'POST',
-    data: successData()
-  }).then(response => response.json()).then(handleVariants)
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(successData(target))
+  })
 }
 
-const successData = () => {
-  return window.TweekerData;
+const successData = (target) => {
+  return {
+    goal_id: target.getAttribute('data-goalId'),
+    variant_ids: window.TweekerData.variants.map(variant => variant.id)
+  }
 }
 
 if (/complete|interactive|loaded/.test(document.readyState)) {
