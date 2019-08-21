@@ -1,4 +1,4 @@
-import { API_ROOT } from 'babel-dotenv';
+import { API_ROOT, SCRIPT_VERSION, NODE_ENV, BUSINESS_ID } from 'babel-dotenv';
 
 window.TweekerData = {};
 
@@ -19,7 +19,17 @@ const fetchVariants = () => {
   }).then(response => response.json()).then(handleVariants)
 }
 
-const variantsUrl = `${API_ROOT}/v1/tests/embed?url=${encodeURIComponent(window.location.href)}&business_id=${TweekerSettings.business_id}`
+const parseBusinessId = () => {
+  if (NODE_ENV === 'development') { return BUSINESS_ID; }
+  const script = window.currentScript || document.querySelector(`script[src*="${SCRIPT_VERSION}.js"]`)
+  const src = script.src
+  const existing = ['http:', 'https:', '', 'localhost:9000', 'cdn.tweeker.io', 'embed', `${SCRIPT_VERSION}.js`, 'latest.js']
+  let array = src.split('/')
+  const remaining = array.filter(element => !existing.includes(element))
+  return remaining[0]
+}
+
+const variantsUrl = `${API_ROOT}/v1/tests/embed?url=${encodeURIComponent(window.location.href)}&business_id=${parseBusinessId()}`
 
 const handleVariants = (data) => {
   if (data.variants.length < 1) { return; }
@@ -74,7 +84,7 @@ if (/complete|interactive|loaded/.test(document.readyState)) {
   // In case DOMContentLoaded was already fired.
   run();
 } else {
-  // In case DOMContentLoaded was not yet fired, 
+  // In case DOMContentLoaded was not yet fired,
   // use it to run the "start" function when document is read for it.
   document.addEventListener('DOMContentLoaded', run);
 }
