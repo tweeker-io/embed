@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "babel-plugin-dotenv": "^0.1.1",
     "core-js": "^3.0.1"
   }
 }
