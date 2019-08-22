@@ -1,11 +1,12 @@
 {
   "name": "scab",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "The embedded script for tweeker.io",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --env.ENVIRONMENT=production",
-    "start": "webpack-dev-server --env.ENVIRONMENT=development"
+    "build": "yarn version patch && webpack --env.ENVIRONMENT=production",
+    "start": "webpack-dev-server --env.ENVIRONMENT=development",
+    "deploy": "aws s3 sync --acl private --profile tweeker dist/ s3://tweeker-embed"
   },
   "keywords": [],
   "author": "Tweeker LLC",

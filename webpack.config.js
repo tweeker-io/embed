@@ -14,6 +14,8 @@ module.exports = (env) => {
     return prev;
   }, {});
 
+  const filename = process.env.NODE_ENV === 'development' ? 'development.js' : `${process.env.npm_package_version}.js`
+
   return {
     module: {
       rules: [
@@ -27,7 +29,7 @@ module.exports = (env) => {
       ]
     },
     output: {
-      filename: '0.0.1.js'
+      filename: filename
     },
     devServer: {
       contentBase: path.join(__dirname, 'dist'),
