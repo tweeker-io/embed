@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 const fs = require('fs');
+const CreateFileWebpack = require('create-file-webpack')
 
 module.exports = (env) => {
   const currentPath = path.join(__dirname);
@@ -15,6 +16,11 @@ module.exports = (env) => {
   }, {});
 
   const filename = process.env.NODE_ENV === 'development' ? 'development.js' : `${process.env.npm_package_version}.js`
+  const versionFile = {
+    path: './dist',
+    fileName: 'version.txt',
+    content: process.env.npm_package_version
+  }
 
   return {
     module: {
@@ -37,7 +43,8 @@ module.exports = (env) => {
       port: 9000
     },
     plugins: [
-      new webpack.DefinePlugin(envKeys)
+      new webpack.DefinePlugin(envKeys),
+      new CreateFileWebpack(versionFile)
     ]
   }
 };

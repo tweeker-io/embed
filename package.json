@@ -8,7 +8,7 @@
     "build": "yarn run update-version && rm dist/* && yarn run webpack --env.ENVIRONMENT=production && cp dist/*.js dist/latest.js",
     "start": "webpack-dev-server --env.ENVIRONMENT=development",
     "deploy": "aws s3 sync --acl public-read --profile tweeker dist/ s3://tweeker-embed",
-    "invalidate": "aws cloudfront --profile tweeker create-invalidation --distribution-id EZC8IDGNC6NNW --paths '/latest.js'"
+    "invalidate": "aws cloudfront --profile tweeker create-invalidation --distribution-id EZC8IDGNC6NNW --paths '/latest.js' '/version.txt'"
   },
   "keywords": [],
   "author": "Tweeker LLC",
