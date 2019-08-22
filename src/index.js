@@ -17,17 +17,7 @@ const fetchVariants = () => {
   }).then(response => response.json()).then(handleVariants)
 }
 
-const parseBusinessId = () => {
-  if (process.env.NODE_ENV === 'development') { return process.env.BUSINESS_ID; }
-  const script = window.currentScript || document.querySelector(`script[src*="${process.env.SCRIPT_VERSION}.js"]`)
-  const src = script.src
-  const existing = ['http:', 'https:', '', 'localhost:9000', 'cdn.tweeker.io', 'embed', `${process.env.SCRIPT_VERSION}.js`, 'latest.js']
-  let array = src.split('/')
-  const remaining = array.filter(element => !existing.includes(element))
-  return remaining[0]
-}
-
-const variantsUrl = `${process.env.API_ROOT}/v1/tests/embed?url=${encodeURIComponent(window.location.href)}&business_id=${parseBusinessId()}`
+const variantsUrl = `${process.env.API_ROOT}/v1/tests/embed?url=${encodeURIComponent(window.location.href)}&business_id=${TweekerSettings.businessId}`
 
 const handleVariants = (data) => {
   if (data.variants.length < 1) { return; }
