@@ -43,7 +43,7 @@ const bindGoals = (goals) => {
     const element = document.querySelector(goal.selector)
     const eventType = (goal.category === 'form') ? 'submit' : 'click'
     element.addEventListener(eventType, handleGoal)
-    element.setAttribute('data-goalId', goal.id)
+    element.setAttribute('data-goal-id', goal.id)
   })
 }
 
@@ -63,7 +63,7 @@ const handleGoal = (event) => {
 
 const successData = (target) => {
   return {
-    goal_id: target.getAttribute('data-goalId'),
+    goal_id: target.getAttribute('data-goal-id'),
     variant_ids: window.TweekerData.variants.map(variant => variant.id)
   }
 }
