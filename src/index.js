@@ -1,8 +1,12 @@
-window.TweekerData = {};
+const localStorageKey = '_tweeker_variant_data'
+const variantsUrl = `${process.env.API_ROOT}/v1/tests/embed?url=` +
+  encodeURIComponent(window.location.href) +
+  `&business_id=${TweekerSettings.businessId}`
+const pageViewsUrl = `${process.env.API_ROOT}/v1/page_views`
 
 const run = () => {
   checkIfTweekerFrame()
-  fetchVariants()
+  !!localData() ? useLocalData() : fetchVariants()
 }
 
 const checkIfTweekerFrame = () => {
@@ -11,34 +15,63 @@ const checkIfTweekerFrame = () => {
   if (window.location !== window.parent.location) { return; }
 }
 
+const localData = () => {
+  const json = window.localStorage.getItem(localStorageKey)
+  return JSON.parse(json)
+}
+
+const saveLocally = (data) => {
+  const json = JSON.stringify(data)
+  window.localStorage.setItem(localStorageKey, json)
+}
+
+const useLocalData = () => {
+  bindVariants()
+  bindGoals()
+  registerPageView()
+}
+
 const fetchVariants = () => {
   return fetch(variantsUrl, {
     method: 'GET',
   }).then(response => response.json()).then(handleVariants)
 }
 
-const variantsUrl = `${process.env.API_ROOT}/v1/tests/embed?url=${encodeURIComponent(window.location.href)}&business_id=${TweekerSettings.businessId}`
+const registerPageView = () => {
+  return post(pageViewsUrl, pageViewParams())
+}
+
+const pageViewParams = () => {
+  return {
+    url: window.location.href,
+    variant_ids: variantIdsParam()
+  }
+}
+
+const variantIdsParam = () => {
+  const variants = localData().variants
+  return variants.map(variant => variant.id)
+}
 
 const handleVariants = (data) => {
   if (data.variants.length < 1) { return; }
   saveLocally(data)
-  bindVariants(data.variants)
-  bindGoals(data.goals)
+  bindVariants()
+  bindGoals()
 }
 
-const saveLocally = (response) => {
-  window.TweekerData = response;
-  return response;
-}
+const bindVariants = () => {
+  const variants = localData().variants
 
-const bindVariants = (variants) => {
   variants.forEach(variant => {
     const element = document.querySelector(variant.selector);
     element.textContent = variant.text;
   })
 }
 
-const bindGoals = (goals) => {
+const bindGoals = () => {
+  const goals = localData().goals
+
   goals.forEach(goal => {
     const element = document.querySelector(goal.selector)
     const eventType = (goal.category === 'form') ? 'submit' : 'click'
@@ -51,14 +84,7 @@ const handleGoal = (event) => {
   const url = process.env.API_ROOT + '/v1/successes';
   const target = event.target;
 
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(successData(target))
-  })
+  return post(url, successData(target))
 }
 
 const successData = (target) => {
@@ -66,6 +92,20 @@ const successData = (target) => {
     goal_id: target.getAttribute('data-goal-id'),
     variant_ids: window.TweekerData.variants.map(variant => variant.id)
   }
+}
+
+const post = (url, data) => {
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ...data,
+      business_id: TweekerSettings.businessId
+    })
+  })
 }
 
 if (/complete|interactive|loaded/.test(document.readyState)) {
