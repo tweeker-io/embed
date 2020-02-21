@@ -1,5 +1,5 @@
 const localStorageKey = '_tweeker_variant_data'
-const variantsUrl = `${process.env.API_ROOT}/v1/tests/embed?url=` +
+const variantsUrl = `${process.env.API_ROOT}/v1/embed?url=` +
   encodeURIComponent(window.location.href) +
   `&business_id=${TweekerSettings.businessId}`
 const pageViewsUrl = `${process.env.API_ROOT}/v1/page_views`
