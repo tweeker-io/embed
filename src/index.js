@@ -90,7 +90,7 @@ const handleGoal = (event) => {
 const successData = (target) => {
   return {
     goal_id: target.getAttribute('data-goal-id'),
-    variant_ids: window.TweekerData.variants.map(variant => variant.id)
+    variant_ids: variantIdsParam()
   }
 }
 
