@@ -83,6 +83,7 @@ const bindGoals = () => {
 const handleGoal = (event) => {
   const url = process.env.API_ROOT + '/v1/successes';
   const target = event.target;
+  event.target.removeEventListener('click', handleGoal)
 
   return post(url, successData(target))
 }
