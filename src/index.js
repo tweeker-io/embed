@@ -9,17 +9,15 @@ const getAllLocalData = () => (
   window.localStorage.getItem(localStorageKey)
 )
 
-const getLocalData = (url) => {
+const localData = () => {
   const json = getAllLocalData()
-  const parsed = JSON.parse(json)
+  const parsed = JSON.parse(json) || {}
   return parsed[url]
 }
 
-const localData = getLocalData(url)
-
 const run = () => {
   checkIfTweekerFrame()
-  !!localData ? useLocalData() : fetchVariants()
+  !!localData() ? useLocalData() : fetchVariants()
 }
 
 const checkIfTweekerFrame = () => {
@@ -29,9 +27,10 @@ const checkIfTweekerFrame = () => {
 }
 
 const saveLocally = (data) => {
-  const json = JSON.stringify({ [url]: data })
+  const newData = { [url]: data }
   const existing = getAllLocalData() || {}
-  window.localStorage.setItem(localStorageKey, { ...existing, ...json })
+  const json = JSON.stringify({ ...existing, ...newData })
+  window.localStorage.setItem(localStorageKey, json)
 }
 
 const useLocalData = () => {
@@ -58,7 +57,7 @@ const pageViewParams = () => {
 }
 
 const variantIdsParam = () => {
-  const variants = localData.variants
+  const variants = localData().variants
   return variants.map(variant => variant.id)
 }
 
@@ -70,7 +69,7 @@ const handleVariants = (data) => {
 }
 
 const bindVariants = () => {
-  const variants = localData.variants
+  const variants = localData().variants
 
   variants.forEach(variant => {
     const element = document.querySelector(variant.selector);
@@ -84,7 +83,7 @@ const bindVariants = () => {
 }
 
 const bindGoals = () => {
-  const goals = localData.goals
+  const goals = localData().goals
 
   goals.forEach(goal => {
     const element = document.querySelector(goal.selector)
