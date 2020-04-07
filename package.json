@@ -7,7 +7,7 @@
     "update-version": "yarn version",
     "build": "yarn run update-version && rm dist/* && yarn run webpack --env.ENVIRONMENT=production && cp dist/*.js dist/latest.js",
     "build:staging": "yarn run update-version && rm dist/* && yarn run webpack --env.ENVIRONMENT=staging && cp dist/*.js dist/latest.js",
-    "start": "webpack-dev-server --env.ENVIRONMENT=development",
+    "start": "rm dist/* && yarn run webpack --env.ENVIRONMENT=development && webpack-dev-server --env.ENVIRONMENT=development",
     "upload": "aws s3 sync --acl public-read --profile tweeker dist/ s3://tweeker-embed",
     "upload:staging": "aws s3 sync --acl public-read --profile tweeker dist/ s3://tweeker-embed-staging",
     "invalidate": "aws cloudfront --profile tweeker create-invalidation --distribution-id EZC8IDGNC6NNW --paths '/latest.js' '/version.txt'",

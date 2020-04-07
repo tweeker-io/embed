@@ -1,12 +1,25 @@
 const localStorageKey = '_tweeker_variant_data'
+const url = window.location.href
 const variantsUrl = `${process.env.API_ROOT}/v1/embed?url=` +
-  encodeURIComponent(window.location.href) +
+  encodeURIComponent(url) +
   `&business_id=${TweekerSettings.businessId}`
 const pageViewsUrl = `${process.env.API_ROOT}/v1/page_views`
 
+const getAllLocalData = () => (
+  window.localStorage.getItem(localStorageKey)
+)
+
+const getLocalData = (url) => {
+  const json = getAllLocalData()
+  const parsed = JSON.parse(json)
+  return parsed[url]
+}
+
+const localData = getLocalData(url)
+
 const run = () => {
   checkIfTweekerFrame()
-  !!localData() ? useLocalData() : fetchVariants()
+  !!localData ? useLocalData() : fetchVariants()
 }
 
 const checkIfTweekerFrame = () => {
@@ -15,14 +28,10 @@ const checkIfTweekerFrame = () => {
   if (window.location !== window.parent.location) { return; }
 }
 
-const localData = () => {
-  const json = window.localStorage.getItem(localStorageKey)
-  return JSON.parse(json)
-}
-
 const saveLocally = (data) => {
-  const json = JSON.stringify(data)
-  window.localStorage.setItem(localStorageKey, json)
+  const json = JSON.stringify({ [url]: data })
+  const existing = getAllLocalData() || {}
+  window.localStorage.setItem(localStorageKey, { ...existing, ...json })
 }
 
 const useLocalData = () => {
@@ -43,40 +52,50 @@ const registerPageView = () => {
 
 const pageViewParams = () => {
   return {
-    url: window.location.href,
+    url,
     variant_ids: variantIdsParam()
   }
 }
 
 const variantIdsParam = () => {
-  const variants = localData().variants
+  const variants = localData.variants
   return variants.map(variant => variant.id)
 }
 
 const handleVariants = (data) => {
-  if (data.variants.length < 1) { return; }
+  if (data.variants.length < 1) { return }
   saveLocally(data)
   bindVariants()
   bindGoals()
 }
 
 const bindVariants = () => {
-  const variants = localData().variants
+  const variants = localData.variants
 
   variants.forEach(variant => {
     const element = document.querySelector(variant.selector);
-    element.textContent = variant.text;
+
+    if (!!element) {
+      element.textContent = variant.text;
+    } else {
+      console.warn(`Tweeker variant with the css selector ${variant.selector} not present on this page.`)
+    }
   })
 }
 
 const bindGoals = () => {
-  const goals = localData().goals
+  const goals = localData.goals
 
   goals.forEach(goal => {
     const element = document.querySelector(goal.selector)
     const eventType = (goal.category === 'form') ? 'submit' : 'click'
-    element.addEventListener(eventType, handleGoal)
-    element.setAttribute('data-goal-id', goal.id)
+
+    if(!!element) {
+      element.addEventListener(eventType, handleGoal)
+      element.setAttribute('data-goal-id', goal.id)
+    } else {
+      console.warn(`Tweeker goal with the css selector ${goal.selector} not present on this page.`)
+    }
   })
 }
 
