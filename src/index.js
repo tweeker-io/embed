@@ -5,14 +5,14 @@ const variantsUrl = `${process.env.API_ROOT}/v1/embed?url=` +
   `&business_id=${TweekerSettings.businessId}`
 const pageViewsUrl = `${process.env.API_ROOT}/v1/page_views`
 
-const getAllLocalData = () => (
-  window.localStorage.getItem(localStorageKey)
-)
+const getAllLocalData = () => {
+  const json = window.localStorage.getItem(localStorageKey)
+  return JSON.parse(json)
+}
 
 const localData = () => {
-  const json = getAllLocalData()
-  const parsed = JSON.parse(json) || {}
-  return parsed[url]
+  const data = getAllLocalData() || {}
+  return data[url]
 }
 
 const run = () => {
@@ -29,6 +29,7 @@ const checkIfTweekerFrame = () => {
 const saveLocally = (data) => {
   const newData = { [url]: data }
   const existing = getAllLocalData() || {}
+  console.log(existing, newData)
   const json = JSON.stringify({ ...existing, ...newData })
   window.localStorage.setItem(localStorageKey, json)
 }
