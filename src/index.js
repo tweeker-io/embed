@@ -29,7 +29,6 @@ const checkIfTweekerFrame = () => {
 const saveLocally = (data) => {
   const newData = { [url]: data }
   const existing = getAllLocalData() || {}
-  console.log(existing, newData)
   const json = JSON.stringify({ ...existing, ...newData })
   window.localStorage.setItem(localStorageKey, json)
 }
