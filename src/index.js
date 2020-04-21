@@ -58,7 +58,6 @@ const variantIdsParam = () => {
 }
 
 const handleVariants = (data) => {
-  if (data.variants.length < 1) { return }
   saveLocally(data)
   bindVariants()
   bindGoals()
