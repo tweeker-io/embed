@@ -70,7 +70,7 @@ const bindVariants = () => {
     const element = document.querySelector(variant.selector);
 
     if (!!element) {
-      element.textContent = variant.text;
+      element.innerHTML = variant.html;
     } else {
       console.warn(`Tweeker variant with the css selector ${variant.selector} not present on this page.`)
     }
