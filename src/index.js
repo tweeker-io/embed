@@ -46,14 +46,10 @@ const fetchVariants = () => {
 }
 
 const registerPageView = () => {
-  return post(pageViewsUrl, pageViewParams())
-}
-
-const pageViewParams = () => {
-  return {
+  return post(pageViewsUrl, {
     url,
     variant_ids: variantIdsParam()
-  }
+  }).then(response => response.json()).then(handleVariants)
 }
 
 const variantIdsParam = () => {
