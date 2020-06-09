@@ -7,7 +7,7 @@
     "update-version": "yarn version",
     "build": "yarn run update-version && rm dist/* && yarn run webpack --env production && cp dist/*.js dist/latest.js && yarn run external",
     "build:staging": "rm dist/* && yarn run webpack --env staging && cp dist/*.js dist/latest.js && yarn run external",
-    "external": "uglifyjs src/external.js --output dist/external.js",
+    "external": "uglifyjs --compress --mangle --output dist/external.js -- src/external.js ",
     "start": "rm dist/* && yarn run webpack --env development && yarn run external && webpack-dev-server --env development",
     "upload": "aws s3 sync --acl public-read --profile tweeker dist/ s3://tweeker-embed",
     "upload:staging": "aws s3 sync --acl public-read --profile tweeker dist/ s3://tweeker-embed-staging",
