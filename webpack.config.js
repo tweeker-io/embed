@@ -7,7 +7,7 @@ const CreateFileWebpack = require('create-file-webpack')
 module.exports = (env) => {
   const currentPath = path.join(__dirname);
   const basePath = currentPath + '/.env';
-  const envPath = basePath + '.' + env.ENVIRONMENT;
+  const envPath = basePath + '.' + env;
   const finalPath = fs.existsSync(envPath) ? envPath : basePath;
   const fileEnv = dotenv.config({ path: finalPath }).parsed;
   const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
@@ -23,6 +23,7 @@ module.exports = (env) => {
   }
 
   return {
+    mode: 'none',
     module: {
       rules: [
         {
